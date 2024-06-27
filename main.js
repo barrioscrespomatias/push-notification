@@ -1,17 +1,34 @@
 import express from 'express';
-import { initializeApp, cert } from 'firebase-admin/app';
+import { initializeApp, cert, getApps, getApp } from 'firebase-admin/app';
 import { getMessaging } from 'firebase-admin/messaging';
-import * as fs from 'fs';
+import { getFirestore } from 'firebase-admin/firestore';
+import { readFileSync } from 'fs';
+import bodyParser from 'body-parser';
 
 // Initialize Express
 const app = express();
 const port = process.env.PORT || 4000;
 
 // Ruta al archivo de credenciales
-const serviceAccount = JSON.parse(fs.readFileSync('serviceAccountKey.json', 'utf8'));
+const serviceAccount = JSON.parse(readFileSync('serviceAccountKey.json', 'utf8'));
 
-initializeApp({
-  credential: cert(serviceAccount),
+// Inicializar Firebase Admin si no está ya inicializado
+if (!getApps().length) {
+  initializeApp({
+    credential: cert(serviceAccount),
+  });
+}
+
+// Obtener la instancia de Firestore
+const db = getFirestore(getApp());
+
+// Middleware para parsear JSON
+app.use(bodyParser.json());
+
+// Middleware para logging de requests
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url} - Body:`, req.body);
+  next();
 });
 
 // Endpoint to send a notification
@@ -42,8 +59,49 @@ app.get('/send-notification', (req, res) => {
     });
 });
 
+app.post("/send-notification-rol", async (req, res) => {
+  const { title, body, rol } = req.body;
+
+  if (!rol) {
+    return res.status(400).send('Rol is required');
+  }
+
+  try {
+    const usuariosTokens = [];
+    const querySnapshot = await db
+      .collection("usuarios")
+      .where("rol", "==", rol)
+      .get();
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.token) {
+        usuariosTokens.push(data.token);
+      }
+    });
+
+    if (usuariosTokens.length === 0) {
+      return res.status(404).send("No hay usuarios a los que enviar un mensaje");
+    }
+
+    const message = {
+      notification: {
+        title: title || 'Default Title',
+        body: body || 'Default Body',
+      },
+      tokens: usuariosTokens,
+    };
+
+    const response = await getMessaging().sendEachForMulticast(message);
+    res.status(200).send(`Mensajes enviados: ${response.successCount}`);
+  } catch (error) {
+    console.error('Error al enviar mensaje:', error);
+    res.status(500).send(`Error al enviar mensaje: ${error}`);
+  }
+});
+
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.send('Push Notification API - Sabor Digital');
 });
 
 app.listen(port, () => {
