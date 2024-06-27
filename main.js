@@ -4,6 +4,7 @@ import { getMessaging } from 'firebase-admin/messaging';
 import { getFirestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 // Initialize Express
 const app = express();
@@ -19,9 +20,15 @@ if (!getApps().length) {
   });
 }
 
+const corsOptions = {
+  origin: 'http://localhost:8100', // Cambia a la URL de tu aplicación Angular
+  optionsSuccessStatus: 200 // para compatibilidad con algunos navegadores antiguos
+};
+
 // Obtener la instancia de Firestore
 const db = getFirestore(getApp());
 
+app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 // Middleware para parsear JSON
 app.use(bodyParser.json());
 
@@ -63,7 +70,7 @@ app.post("/send-notification-rol", async (req, res) => {
   const { title, body, rol } = req.body;
 
   if (!rol) {
-    return res.status(400).send('Rol is required');
+    return res.status(400).json({ error: 'Rol is required' });
   }
 
   try {
@@ -81,7 +88,7 @@ app.post("/send-notification-rol", async (req, res) => {
     });
 
     if (usuariosTokens.length === 0) {
-      return res.status(404).send("No hay usuarios a los que enviar un mensaje");
+      return res.status(404).json({ error: "No hay usuarios a los que enviar un mensaje" });
     }
 
     const message = {
@@ -93,10 +100,10 @@ app.post("/send-notification-rol", async (req, res) => {
     };
 
     const response = await getMessaging().sendEachForMulticast(message);
-    res.status(200).send(`Mensajes enviados: ${response.successCount}`);
+    res.status(200).json({ message: `Mensajes enviados: ${response.successCount}` });
   } catch (error) {
     console.error('Error al enviar mensaje:', error);
-    res.status(500).send(`Error al enviar mensaje: ${error}`);
+    res.status(500).json({ error: `Error al enviar mensaje: ${error.message}` });
   }
 });
 
