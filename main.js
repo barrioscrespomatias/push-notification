@@ -28,7 +28,7 @@ const corsOptions = {
 // Obtener la instancia de Firestore
 const db = getFirestore(getApp());
 
-app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
+// app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 // Middleware para parsear JSON
 app.use(bodyParser.json());
 
