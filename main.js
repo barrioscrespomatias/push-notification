@@ -4,6 +4,7 @@ import { getMessaging } from 'firebase-admin/messaging';
 import { getFirestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import bodyParser from 'body-parser';
+import fs from 'fs'; // Importar el módulo fs
 
 // Initialize Express
 const app = express();
