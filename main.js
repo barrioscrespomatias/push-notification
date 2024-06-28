@@ -44,7 +44,11 @@ app.use(bodyParser.json());
 
 // Middleware para logging de requests
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url} - Body:`, req.body);
+  console.log('========================================');
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+  console.log('Body:', req.body);
+  console.log('Origin:', req.headers.origin || 'No Origin');
+  console.log('========================================');
   next();
 });
 
