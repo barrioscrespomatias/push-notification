@@ -9,10 +9,17 @@ import bodyParser from 'body-parser';
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Ruta al archivo de credenciales
-const serviceAccount = JSON.parse(readFileSync('serviceAccountKey.json', 'utf8'));
+const secretFilePath = '/etc/secrets/GOOGLE_APPLICATION_CREDENTIALS';
 
-// Inicializar Firebase Admin si no está ya inicializado
+// Verificar que el archivo secreto existe
+if (!fs.existsSync(secretFilePath)) {
+  console.error(`File ${secretFilePath} does not exist.`);
+  process.exit(1);
+}
+
+// Cargar las credenciales desde el archivo secreto
+const serviceAccount = JSON.parse(fs.readFileSync(secretFilePath, 'utf8'));
+
 if (!getApps().length) {
   initializeApp({
     credential: cert(serviceAccount),

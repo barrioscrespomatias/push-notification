@@ -1,0 +1,9 @@
+# render.yaml
+
+services:
+  - name: my-app
+    env:
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        file: /etc/secrets/GOOGLE_APPLICATION_CREDENTIALS
+    buildCommand: npm install && npm run build
+    startCommand: npm start
