@@ -91,9 +91,9 @@ app.get('/send-notification', (req, res) => {
 app.get("/send-notification-rol", async (req, res) => {
   const { rol, title, body } = req.query;
 
-  console.log('Rol:', req.rol);
-  console.log('Title:', req.title);
-  console.log('Body:', req.body);
+  console.log('Rol:', rol);
+  console.log('Title:', title);
+  console.log('Body:', body);
 
   if (!rol) {
     return res.status(400).json({ error: 'Rol is required' });
