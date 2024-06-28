@@ -4,7 +4,6 @@ import { getMessaging } from 'firebase-admin/messaging';
 import { getFirestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import bodyParser from 'body-parser';
-import fs from 'fs'; // Importar el módulo fs
 import cors from 'cors';
 
 // Initialize Express
@@ -20,7 +19,7 @@ if (!fs.existsSync(secretFilePath)) {
 }
 
 // Cargar las credenciales desde el archivo secreto
-const serviceAccount = JSON.parse(fs.readFileSync(secretFilePath, 'utf8'));
+const serviceAccount = JSON.parse(readFileSync(secretFilePath, 'utf8'));
 
 if (!getApps().length) {
   initializeApp({
@@ -30,12 +29,8 @@ if (!getApps().length) {
 
 // Configurar CORS
 const corsOptions = {
-  origin: ['capacitor://localhost',
-  'ionic://localhost',
-  'http://localhost',
-  'http://localhost:8080',
-  'http://localhost:8100',], // Permitir localhost y cualquier otro origen
-  optionsSuccessStatus: 200 ,// Para compatibilidad con algunos navegadores antiguos
+  origin: ['capacitor://localhost', 'ionic://localhost', 'http://localhost', 'http://localhost:8080', 'http://localhost:8100'],
+  optionsSuccessStatus: 200,
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Content-Length', 'Authorization'],
@@ -47,7 +42,6 @@ app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 // Obtener la instancia de Firestore
 const db = getFirestore(getApp());
 
-// app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 // Middleware para parsear JSON
 app.use(bodyParser.json());
 
@@ -55,7 +49,7 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   console.log('========================================');
   console.log(`${new Date().toISOString()} - ${req.method}`);
-  console.log('Origin:', req.headers.origin, req.headers.origin == 'http://localhost' ? 'Android' : 'Web' || 'No Origin');
+  console.log('Origin:', req.headers.origin, req.headers.origin === 'http://localhost' ? 'Android' : 'Web' || 'No Origin');
   console.log('========================================');
   next();
 });
@@ -81,7 +75,6 @@ app.get('/send-notification', (req, res) => {
     .then((response) => {
       console.log('Successfully sent message:', response);
       res.status(200).send('Notification sent successfully');
-      // res.status(200).json({ message: `Mensajes enviados: ${response}` });
     })
     .catch((error) => {
       console.error('Error sending message:', error);
@@ -139,6 +132,6 @@ app.get('/', (req, res) => {
   res.send('Push Notification API - Sabor Digital');
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Example app listening on port ${port}`);
 });
