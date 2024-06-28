@@ -30,7 +30,11 @@ if (!getApps().length) {
 
 // Configurar CORS
 const corsOptions = {
-  origin: ['http://localhost:8100', 'http://localhost'], // Permitir localhost y cualquier otro origen
+  origin: ['capacitor://localhost',
+  'ionic://localhost',
+  'http://localhost',
+  'http://localhost:8080',
+  'http://localhost:8100',], // Permitir localhost y cualquier otro origen
   optionsSuccessStatus: 200 // Para compatibilidad con algunos navegadores antiguos
 };
 app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
