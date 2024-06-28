@@ -30,7 +30,7 @@ if (!getApps().length) {
 
 // Configurar CORS
 const corsOptions = {
-  origin: '*', // Permitir cualquier origen
+  origin: ['http://localhost:8100', 'http://localhost'], // Permitir localhost y cualquier otro origen
   optionsSuccessStatus: 200 // Para compatibilidad con algunos navegadores antiguos
 };
 app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
