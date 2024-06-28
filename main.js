@@ -89,8 +89,8 @@ app.get('/send-notification', (req, res) => {
     });
 });
 
-app.post("/send-notification-rol", async (req, res) => {
-  const { title, body, rol } = req.body;
+app.get("/send-notification-rol", async (req, res) => {
+  const { rol, title, body } = req.query;
 
   if (!rol) {
     return res.status(400).json({ error: 'Rol is required' });
