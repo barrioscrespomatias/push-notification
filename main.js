@@ -35,7 +35,12 @@ const corsOptions = {
   'http://localhost',
   'http://localhost:8080',
   'http://localhost:8100',], // Permitir localhost y cualquier otro origen
-  optionsSuccessStatus: 200 // Para compatibilidad con algunos navegadores antiguos
+  optionsSuccessStatus: 200 ,// Para compatibilidad con algunos navegadores antiguos
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Length', 'Authorization'],
+  credentials: true,
+  maxAge: 86400, // 1 day
 };
 app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 
