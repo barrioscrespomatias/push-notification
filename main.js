@@ -5,6 +5,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import fs from 'fs'; // Importar el módulo fs
 
 // Initialize Express
 const app = express();
