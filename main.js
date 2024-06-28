@@ -54,8 +54,7 @@ app.use(bodyParser.json());
 // Middleware para logging de requests
 app.use((req, res, next) => {
   console.log('========================================');
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  console.log('Body:', req.body);
+  console.log(`${new Date().toISOString()} - ${req.method}`);
   console.log('Origin:', req.headers.origin || 'No Origin');
   console.log('========================================');
   next();
@@ -91,6 +90,10 @@ app.get('/send-notification', (req, res) => {
 
 app.get("/send-notification-rol", async (req, res) => {
   const { rol, title, body } = req.query;
+
+  console.log('Rol:', req.rol);
+  console.log('Title:', req.title);
+  console.log('Body:', req.body);
 
   if (!rol) {
     return res.status(400).json({ error: 'Rol is required' });
