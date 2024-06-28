@@ -4,7 +4,6 @@ import { getMessaging } from 'firebase-admin/messaging';
 import { getFirestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import bodyParser from 'body-parser';
-import cors from 'cors';
 
 // Initialize Express
 const app = express();
@@ -19,11 +18,6 @@ if (!getApps().length) {
     credential: cert(serviceAccount),
   });
 }
-
-const corsOptions = {
-  origin: 'http://localhost:8100', // Cambia a la URL de tu aplicación Angular
-  optionsSuccessStatus: 200 // para compatibilidad con algunos navegadores antiguos
-};
 
 // Obtener la instancia de Firestore
 const db = getFirestore(getApp());
