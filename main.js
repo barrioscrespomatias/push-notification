@@ -55,7 +55,7 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   console.log('========================================');
   console.log(`${new Date().toISOString()} - ${req.method}`);
-  console.log('Origin:', req.headers.origin || 'No Origin');
+  console.log('Origin:', req.headers.origin, req.headers.origin == 'http://localhost' ? 'Android' : 'Web' || 'No Origin');
   console.log('========================================');
   next();
 });
@@ -81,6 +81,7 @@ app.get('/send-notification', (req, res) => {
     .then((response) => {
       console.log('Successfully sent message:', response);
       res.status(200).send('Notification sent successfully');
+      // res.status(200).json({ message: `Mensajes enviados: ${response}` });
     })
     .catch((error) => {
       console.error('Error sending message:', error);
@@ -126,6 +127,7 @@ app.get("/send-notification-rol", async (req, res) => {
     };
 
     const response = await getMessaging().sendEachForMulticast(message);
+    console.log('Successfully sent message:', response);
     res.status(200).json({ message: `Mensajes enviados: ${response.successCount}` });
   } catch (error) {
     console.error('Error al enviar mensaje:', error);
