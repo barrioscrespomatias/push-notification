@@ -5,6 +5,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { readFileSync } from 'fs';
 import bodyParser from 'body-parser';
 import fs from 'fs'; // Importar el módulo fs
+import cors from 'cors';
 
 // Initialize Express
 const app = express();
@@ -26,6 +27,13 @@ if (!getApps().length) {
     credential: cert(serviceAccount),
   });
 }
+
+// Configurar CORS
+const corsOptions = {
+  origin: ['http://localhost:8100', '*'], // Permitir localhost y cualquier otro origen
+  optionsSuccessStatus: 200 // Para compatibilidad con algunos navegadores antiguos
+};
+app.use(cors(corsOptions)); // Habilita CORS para todas las rutas
 
 // Obtener la instancia de Firestore
 const db = getFirestore(getApp());
